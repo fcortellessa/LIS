@@ -27,7 +27,10 @@ C.addFrame("box", "table") \
     .setContact(1) \
     .setMass(.1)
 
-bot = ry.BotOp(C, False)
+bot = ry.BotOp(C, useRealRobot=True)
+if bot.get_t()==0: #if the above failed, use a sim...
+    del bot
+    bot = ry.BotOp(C, useRealRobot=False)
 bot.home(C)
 C.view(False)
 
