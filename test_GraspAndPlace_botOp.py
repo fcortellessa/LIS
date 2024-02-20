@@ -10,7 +10,6 @@ import manipulation as manip
 import numpy as np
 import time
 
-
 C = ry.Config()
 C.addFile(ry.raiPath('../rai-robotModels/scenarios/pandaSingle.g'))
 
@@ -85,9 +84,19 @@ for i_pos in place_pos:
     while bot.getTimeToEnd() > 0:
         bot.sync(C, .1)
 
+    bot.gripperClose(ry._left, speed=.2)
+    while not bot.gripperDone(ry._left):
+        bot.sync(C, .1)
+
     bot.move(path=M3.path, times=[3.])
     while bot.getTimeToEnd() > 0:
         bot.sync(C, .1)
+
+    bot.gripperMove(ry._left, width=.08, speed=.1)
+    while not bot.gripperDone(ry._left):
+        bot.sync(C)
     
 
-    
+    # ToDo:
+        # constrain upper side of box that normal vector points always in direction of the z-axis
+        # constrain height of the box:
