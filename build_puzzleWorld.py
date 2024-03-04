@@ -3,7 +3,9 @@ import numpy as np
 import time
 
 
-# position is defined by center
+# position is defined by center of object
+# position: distance between two holes on puzzle board is 4 cm
+
 cube1_pos = [-1.5*0.04, 1.5*0.04, 0]
 cube2_pos = [-4.5*0.04, 2.5*0.04, 0]
 cube3_pos = [3.5*0.04, -4.5*0.04, 0]
@@ -15,7 +17,6 @@ block3_pos = [-4*0.04, -4.5*0.04, 0]
 longblock_pos = [-4*0.04, -4.5*0.04, 0]
 corner_pos = [-4*0.04, -4.5*0.04, 0]
 
-
 # Note: do not set contact
 start = [0.015-0.2, -.185, 0.0]
 goal = [0.2-0.04, -0.2+0.04, 0]
@@ -23,15 +24,12 @@ goal = [0.2-0.04, -0.2+0.04, 0]
 
 C = ry.Config()     # initialize empty config
 
-
-
 # Note: think of height of table and add half of the height to all position z-coordinates
 C.addFrame(name='puzzle_world') \
     .setShape(ry.ST.ssBox, [0.4, 0.4, 0.001, 0.0]) \
     .setPosition([0.0, 0.0, 0.0]) \
     .setColor([.3, .3, .3]) \
     .setContact(1)
-
 
 # !! ToDo: make relative position [0, 0, 0] as top of puzzle_world table 
 C.addFrame(name='moving_object', parent='puzzle_world') \
@@ -98,6 +96,8 @@ def add_cornerBlock(name='cornerBlock_obstacle', block_pos=[0,0,0], orientation=
         print("orientation must be either 'upper_right', 'upper_left', 'lower_right' or 'lower_left'. ")
 
 
+# ToDo: add goal area as non contact frame
+
 add_cube('cube1', cube1_pos)
 add_cube('cube2', cube2_pos)
 add_cube('cube3', cube3_pos)
@@ -105,5 +105,8 @@ add_cube('cube3', cube3_pos)
 add_block('block1', block1_pos, 'vertical')
 add_block('block2', block2_pos, 'vertical')
 add_block('block3', block3_pos, 'horizontal')
+
+add_longblock('longBlock', longblock_pos, 'horizontal')
+add_cornerBlock('cornerBlock', corner_pos, 'upper_right')
 
 C.view(True)
