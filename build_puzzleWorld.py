@@ -18,8 +18,8 @@ longblock_pos = [2*0.04, -1.5*0.04, 0]
 corner_pos = [-3.5*0.04, -3*0.04, 0]
 
 # Note: do not set contact
-start = [0.015-0.2, -.185, 0.0]
-goal = [0.2-0.04, -0.2+0.04, 0]
+start = [-4*0.04, 0.0, 0.0]
+q_goal = [-4*0.04, 4*0.04, 0]
 
 
 C = ry.Config()     # initialize empty config
@@ -97,7 +97,7 @@ def add_cornerBlock(name='cornerBlock_obstacle', block_pos=[0,0,0], orientation=
 
 def add_goal(goal_pos, goal_size):
     C.addFrame(name='goal', parent='puzzle_world') \
-    .setShape(ry.ST.ssBox, [goal_size, goal_size, 0.001, 0.0]) \
+    .setShape(ry.ST.ssBox, [goal_size, goal_size, 0.01, 0.0]) \
     .setRelativePosition(goal_pos) \
     .setColor([1., 1., 0]) \
     .setContact(0)
@@ -114,6 +114,7 @@ add_block('block2', block2_pos, 'vertical')
 add_block('block3', block3_pos, 'horizontal')
 
 add_longblock('longBlock', longblock_pos, 'horizontal')
+add_goal(q_goal, 0.08)
 # add_cornerBlock('cornerBlock', corner_pos, 'upper_right')
 
 C.view(True)
