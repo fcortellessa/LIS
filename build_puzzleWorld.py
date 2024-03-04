@@ -14,8 +14,8 @@ block1_pos = [-2.5*0.04, 4*0.04, 0]
 block2_pos = [1.5*0.04, 1*0.04, 0]
 block3_pos = [-4*0.04, -4.5*0.04, 0]
 
-longblock_pos = [-4*0.04, -4.5*0.04, 0]
-corner_pos = [-4*0.04, -4.5*0.04, 0]
+longblock_pos = [2*0.04, -1.5*0.04, 0]
+corner_pos = [-3.5*0.04, -3*0.04, 0]
 
 # Note: do not set contact
 start = [0.015-0.2, -.185, 0.0]
@@ -95,6 +95,13 @@ def add_cornerBlock(name='cornerBlock_obstacle', block_pos=[0,0,0], orientation=
     else:
         print("orientation must be either 'upper_right', 'upper_left', 'lower_right' or 'lower_left'. ")
 
+def add_goal(goal_pos, goal_size):
+    C.addFrame(name='goal', parent='puzzle_world') \
+    .setShape(ry.ST.ssBox, [goal_size, goal_size, 0.001, 0.0]) \
+    .setRelativePosition(goal_pos) \
+    .setColor([1., 1., 0]) \
+    .setContact(0)
+    
 
 # ToDo: add goal area as non contact frame
 
@@ -107,6 +114,6 @@ add_block('block2', block2_pos, 'vertical')
 add_block('block3', block3_pos, 'horizontal')
 
 add_longblock('longBlock', longblock_pos, 'horizontal')
-add_cornerBlock('cornerBlock', corner_pos, 'upper_right')
+# add_cornerBlock('cornerBlock', corner_pos, 'upper_right')
 
 C.view(True)
