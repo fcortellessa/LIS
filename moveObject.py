@@ -28,12 +28,16 @@ longblock_pos = [2*0.04, -1.5*0.04, 0.0085]
 corner_pos = [-2 * 0.04, -2.5 * 0.04, 0.0085] 
 
 # Note: do not set contact
-start = [-4*0.04, 0.0, 0.015]
+
+# start = [4*0.04, 0.0, 0.015]
+# start = [-4*0.04, 0.0, 0.015]
+start = [1*0.04, -4*0.04, 0.015]
 q_goal = [-4*0.04, 4*0.04, 0.005]
+q_pWorld = [-0.2, 0.2, 0.05]
 
 C.addFrame(name='puzzle_world', parent='table') \
     .setShape(ry.ST.ssBox, [0.4, 0.4, 0.001, 0.0]) \
-    .setRelativePosition([-0.2, 0.2, 0.05]) \
+    .setRelativePosition(q_pWorld) \
     .setColor([0, 1]) \
     .setContact(1)
 
@@ -166,12 +170,7 @@ box = "moving_object";
 table = "table";
 boxSize = C.frame(box).getSize()
 
-
-
-# obstacle in [-.0,.3-.055,.095] with size [.2,.3,.05,.005]
-# place_pos = [[-.3, .2],[0.1, .2], [0,0]]
-
-q_goal = [-.3, .1]
+q_goal_abs = [q_goal[0]+q_pWorld[0], q_goal[1]+q_pWorld[1], q_goal[2]+q_pWorld[2]] 
 qStart = C.getJointState()  # get state of each joint (i.e 7 joints for panda)
 
 graspDirection = 'xz'       # grasps box at x-side from the z-direction (top) 
@@ -182,7 +181,7 @@ M = manip.ManipulationModelling(C, helpers=[gripper])
 M.setup_pick_and_place_waypoints(gripper, box, homing_scale=1e-1, joint_limits=False)
 M.grasp_top_box(1., gripper, box, graspDirection)
 M.place_box(2., box, table, palm, placeDirection)
-M.target_relative_xy_position(2., box, table, q_goal)
+M.target_relative_xy_position(2., box, table, q_goal_abs)
 M.target_x_orientation(2., box, place_orientation)
 M.solve()
 
