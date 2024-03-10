@@ -20,8 +20,18 @@ class PuzzleWorld:
 
         start = [-4*0.04, 0.0, 0.015]
         q_goal = [-4*0.04, 4*0.04, 0.005]
+        
+        border_height = 0.1
+        border_thickness = 0.1
+        # left border, right border, top border, bottom border
+        border_pos = [([0.2+border_thickness/2, 0, border_height/2], 'vertical'),
+                      ([-0.2-border_thickness/2, 0, border_height/2], 'vertical'),
+                      ([0, 0.2+border_thickness/2, border_height/2], 'horizontal'), 
+                      ([0, -0.2-border_thickness/2, border_height/2], 'horizontal')]
+    
 
         self._add_frame('puzzle_world', 'table', ry.ST.ssBox, [0.4, 0.4, 0.001, 0.0], [-0.2, 0.2, 0.05], [0, 1], 1)
+        self._add_border_boxes(border_pos, border_height, border_thickness)
         self._add_frame('moving_object', 'puzzle_world', ry.ST.ssBox, [0.03, 0.03, 0.03, 0.0], start, [1, 0, 0], 1)
 
         self._add_cube('cube1', cube1_pos)
@@ -42,6 +52,25 @@ class PuzzleWorld:
             .setRelativePosition(rel_pos) \
             .setColor(color) \
             .setContact(contact)
+
+    def _add_border_boxes(self, border_pos, border_height, border_thickness):
+        # Define the size and color of the border boxes
+        box_color = [0.0, 1.0, 0.0, 0.2]  # Almost transparent color (RGBA)
+        box_name = ['left', 'right', 'top', 'bottom']
+        for i, pos in enumerate(border_pos):
+            pos, orientation = pos[0], pos[1]
+            if orientation == 'vertical':
+                box_size = [border_thickness, 0.6, border_height, 0.0] 
+            elif orientation == 'horizontal':
+                box_size = [0.6, border_thickness, border_height, 0.0]
+            border_box_name = f'border_box_{box_name[i]}'
+            self.C.addFrame(name=border_box_name, parent='puzzle_world') \
+                .setShape(ry.ST.ssBox, box_size) \
+                .setRelativePosition(pos) \
+                .setColor(box_color) \
+                .setContact(1)
+        
+        
 
     def _add_cube(self, name, pos):
         return self._add_frame(name, 'puzzle_world', ry.ST.ssBox, [0.04, 0.04, 0.017, 0.0], pos, [0, 0, 1], 1)
