@@ -1,9 +1,10 @@
 import robotic as ry
 
 class PuzzleWorld:
-    def __init__(self, C, parent='table'):
+    def __init__(self, C, parent='table', pos_puzzleWorld=[-0.2, 0.2, 0.05]):
         self.C = C
         self.parent = parent
+        self.pos_puzzleWorld = pos_puzzleWorld
 
     def build(self):
         # position is defined by center of object (distance between two holes on puzzle board is 4 cm)
@@ -30,7 +31,7 @@ class PuzzleWorld:
                       ([0, -0.2-border_thickness/2, border_height/2], 'horizontal')]
     
 
-        self._add_frame('puzzle_world', 'table', ry.ST.ssBox, [0.4, 0.4, 0.001, 0.0], [-0.2, 0.2, 0.05], [0, 1], 1)
+        self._add_frame('puzzle_world', 'table', ry.ST.ssBox, [0.4, 0.4, 0.001, 0.0], self.pos_puzzleWorld, [0, 1], 1)
         self._add_border_boxes(border_pos, border_height, border_thickness)
         self._add_frame('moving_object', 'puzzle_world', ry.ST.ssBox, [0.03, 0.03, 0.03, 0.0], start, [1, 0, 0], 1)
 
