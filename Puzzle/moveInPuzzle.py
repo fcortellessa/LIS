@@ -1,7 +1,7 @@
 import sys
 import robotic as ry
-import build_puzzleWorld3 as pWorld 
-sys.path.insert(0,'/home/daniel/PycharmProjects/flavia/rai-tutorials')
+import oop_prebuilt_puzzleWorld as pWorld 
+sys.path.insert(0,'rai-tutorials')
 import manipulation as manip
 import time
 
@@ -10,8 +10,10 @@ C = ry.Config()
 C.addFile(ry.raiPath('scenarios/pandaSingle.g'))
 
 q_pWorld = [-0.2, 0.2, 0.05]
-q_start = [-4*0.04, 0.0, 0.015]
-q_goal = [-4*0.04, 4*0.04, 0.005]
+# q_start = [-4*0.04, 0.0, 0.015]
+# q_goal = [-4*0.04, 4*0.04, 0.005]
+q_start = [1*0.04, -4*0.04, 0.015]
+q_goal = [3.5*0.04, 3.5*0.04, 0.005]
 puzzle_world = pWorld.PuzzleWorld(C, 'table', q_pWorld, q_start, q_goal)
 puzzle_world.build()
 
@@ -50,7 +52,7 @@ M2.retract([.0, .2], gripper)
 M2.approach([.8, 1.], gripper)
 M2.solve()
 if not M.feasible:
-    print("M2 Not feasible")
+    print("M2 (movement to object) Not feasible")
 
 M3 = M.sub_motion(1)
 M3.no_collision([], table, box)
@@ -58,7 +60,7 @@ M3.no_collision([], box, 'puzzle_world')
 M3.bias(.5, qHome, 1e0)
 M3.solve()
 if not M.feasible:
-    print("M3 Not feasible")
+    print("M3 (movement to goal position) Not feasible")
 
 bot.move(path=M2.path, times=[3.])
 while bot.getTimeToEnd() > 0:
