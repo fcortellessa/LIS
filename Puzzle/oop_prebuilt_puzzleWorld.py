@@ -1,10 +1,12 @@
 import robotic as ry
 
 class PuzzleWorld:
-    def __init__(self, C, parent='table', pos_puzzleWorld=[-0.2, 0.2, 0.05]):
+    def __init__(self, C, parent='table', pos_puzzleWorld=[-0.2, 0.2, 0.05], q_start = [-4*0.04, 0.0, 0.015], q_goal = [-4*0.04, 4*0.04, 0.005]):
         self.C = C
         self.parent = parent
         self.pos_puzzleWorld = pos_puzzleWorld
+        self.q_goal = q_goal
+        self.q_start = q_start
 
     def build(self):
         # position is defined by center of object (distance between two holes on puzzle board is 4 cm)
@@ -20,7 +22,6 @@ class PuzzleWorld:
         corner_pos = [-2 * 0.04, -2.5 * 0.04, 0.0085] # position of center of horizontal 4x8 block
 
         start = [-4*0.04, 0.0, 0.015]
-        q_goal = [-4*0.04, 4*0.04, 0.005]
         
         border_height = 0.1
         border_thickness = 0.1
@@ -33,7 +34,7 @@ class PuzzleWorld:
 
         self._add_frame('puzzle_world', 'table', ry.ST.ssBox, [0.4, 0.4, 0.001, 0.0], self.pos_puzzleWorld, [0, 1], 1)
         self._add_border_boxes(border_pos, border_height, border_thickness)
-        self._add_frame('moving_object', 'puzzle_world', ry.ST.ssBox, [0.03, 0.03, 0.03, 0.0], start, [1, 0, 0], 1)
+        self._add_movingObject('moving_object', 'puzzle_world', ry.ST.ssBox, [0.03, 0.03, 0.03, 0.0], start, [1, 0, 0])
 
         self._add_cube('cube1', cube1_pos)
         self._add_cube('cube2', cube2_pos)
@@ -43,7 +44,7 @@ class PuzzleWorld:
         self._add_block('block3', block3_pos, 'horizontal')
         self._add_long_block('longBlock', longblock_pos, 'horizontal')
         self._add_corner_block('cornerBlock', corner_pos, 'upper_left')
-        self._add_goal(q_goal, 0.08)
+        self._add_goal(self.q_goal, 0.08)
 
         return self.C
 
@@ -53,6 +54,16 @@ class PuzzleWorld:
             .setRelativePosition(rel_pos) \
             .setColor(color) \
             .setContact(contact)
+    
+    def _add_movingObject(self, name, parent, shape_type, size, rel_pos, color):
+        return self.C.addFrame(name=name, parent=parent) \
+            .setShape(shape_type, size) \
+            .setRelativePosition(rel_pos) \
+            .setColor(color) \
+            .setJoint(ry.JT.rigid) \
+            .setMass(1.0) \
+            .setContact(1)
+
 
     def _add_border_boxes(self, border_pos, border_height, border_thickness):
         # Define the size and color of the border boxes
@@ -71,8 +82,6 @@ class PuzzleWorld:
                 .setColor(box_color) \
                 .setContact(1)
         
-        
-
     def _add_cube(self, name, pos):
         return self._add_frame(name, 'puzzle_world', ry.ST.ssBox, [0.04, 0.04, 0.017, 0.0], pos, [0, 0, 1], 1)
 
