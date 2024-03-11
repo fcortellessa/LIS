@@ -1,7 +1,7 @@
 import robotic as ry
 
-# from build_puzzleWorld2 import build_puzzleWorld
-import build_puzzleWorld3 as pWorld 
+# from prebuilt_puzzleWorld import build_puzzleWorld
+import oop_prebuilt_puzzleWorld as pWorld 
 
 
 C = ry.Config()
