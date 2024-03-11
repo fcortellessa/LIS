@@ -1,146 +1,136 @@
 import robotic as ry
 
-# build maze with available blocks: 3 cubes, 3 blocks, 1 long block and 1 corner block
-def build_puzzleWorld(C, parent='table'):
+class PuzzleWorld:
+    def __init__(self, C, parent='table', pos_puzzleWorld=[-0.2, 0.2, 0.05], q_start = [-4*0.04, 0.0, 0.015], q_goal = [-4*0.04, 4*0.04, 0.005]):
+        self.C = C
+        self.parent = parent
+        self.pos_puzzleWorld = pos_puzzleWorld
+        self.q_goal = q_goal
+        self.q_start = q_start
 
-    # position is defined by center of object (distance between two holes on puzzle board is 4 cm)
-    cube1_pos = [-1.5*0.04, 1.5*0.04, 0.0085]
-    cube2_pos = [-4.5*0.04, 2.5*0.04, 0.0085]
-    cube3_pos = [3.5*0.04, -4.5*0.04, 0.0085]
-    
-    block1_pos = [-2.5*0.04, 4*0.04, 0.0085]
-    block2_pos = [1.5*0.04, 1*0.04, 0.0085]
-    block3_pos = [-4*0.04, -4.5*0.04, 0.0085]
-
-    longblock_pos = [2*0.04, -1.5*0.04, 0.0085]
-    corner_pos = [-2 * 0.04, -2.5 * 0.04, 0.0085] # position of center of horizontal 4x8 block
-
-    # Note: do not set contact
-    start = [-4*0.04, 0.0, 0.015]
-    q_goal = [-4*0.04, 4*0.04, 0.005]
- 
-    # Note: add half of the height of the table to all position z-coordinates
-    C.addFrame(name='puzzle_world', parent=parent) \
-        .setShape(ry.ST.ssBox, [0.4, 0.4, 0.001, 0.0]) \
-        .setRelativePosition([-0.2, 0.2, 0.05]) \
-        .setColor([0, 1]) \
-        .setContact(1)
-    C.addFrame(name='moving_object', parent='puzzle_world') \
-        .setShape(ry.ST.ssBox, [0.03, 0.03, 0.03, 0.0]) \
-        .setRelativePosition(start) \
-        .setColor([1, .0, .0]) \
-        .setContact(1)
-
-    add_cube(C, 'cube1', cube1_pos)
-    add_cube(C, 'cube2', cube2_pos)
-    add_cube(C, 'cube3', cube3_pos)
-    add_block(C, 'block1', block1_pos, 'vertical')
-    add_block(C, 'block2', block2_pos, 'vertical')
-    add_block(C, 'block3', block3_pos, 'horizontal')
-    add_longblock(C, 'longBlock', longblock_pos, 'horizontal')
-    add_cornerBlock(C, 'cornerBlock', corner_pos, 'upper_left')
-    add_goal(C, q_goal, 0.08)
+    def build(self):
+        # position is defined by center of object (distance between two holes on puzzle board is 4 cm)
+        cube1_pos = [-1.5*0.04, 1.5*0.04, 0.0085]
+        cube2_pos = [-4.5*0.04, 2.5*0.04, 0.0085]
+        cube3_pos = [3.5*0.04, -4.5*0.04, 0.0085]
         
-    return C
+        block1_pos = [-2.5*0.04, 4*0.04, 0.0085]
+        block2_pos = [1.5*0.04, 1*0.04, 0.0085]
+        block3_pos = [-4*0.04, -4.5*0.04, 0.0085]
 
+        longblock_pos = [2*0.04, -1.5*0.04, 0.0085]
+        corner_pos = [-2 * 0.04, -2.5 * 0.04, 0.0085] # position of center of horizontal 4x8 block
 
-# ----------------- Helper functions -----------------
-def add_cube(C, name='cubic_obstacle', cube_pos=[0, 0, 0], lenXY_cube=0.04):
-    C.addFrame(name=name, parent='puzzle_world') \
-        .setShape(ry.ST.ssBox, [lenXY_cube, lenXY_cube, 0.017, 0.0]) \
-        .setRelativePosition(cube_pos) \
-        .setColor([.0, .0, 1]) \
-        .setContact(1)
-    return C 
-
-def add_block(C, name='block_obstacle', block_pos=[0, 0, 0], orientation='horizontal'):
-    if orientation == 'horizontal':
-        C.addFrame(name=name, parent='puzzle_world') \
-            .setShape(ry.ST.ssBox, [0.08, 0.04, 0.017, 0.0]) \
-            .setRelativePosition(block_pos) \
-            .setColor([.0, .0, 1]) \
-            .setContact(1)
-    elif orientation == 'vertical':
-        C.addFrame(name=name, parent='puzzle_world') \
-            .setShape(ry.ST.ssBox, [0.04, 0.08, 0.017, 0.0]) \
-            .setRelativePosition(block_pos) \
-            .setColor([.0, .0, 1]) \
-            .setContact(1)
-    else:
-        print("orientation must be either 'horizontal' or 'vertical'. ")
-    return C
-
-def add_longblock(C, name='longBlock_obstacle', block_pos=[0, 0, 0], orientation='horizontal'):
-    if orientation == 'horizontal':
-        C.addFrame(name=name, parent='puzzle_world') \
-            .setShape(ry.ST.ssBox, [0.16, 0.04, 0.017, 0.0]) \
-            .setRelativePosition(block_pos) \
-            .setColor([.0, .0, 1]) \
-            .setContact(1)
-    elif orientation == 'vertical':
-        C.addFrame(name=name, parent='puzzle_world') \
-            .setShape(ry.ST.ssBox, [0.04, 0.16, 0.017, 0.0]) \
-            .setRelativePosition(block_pos) \
-            .setColor([.0, .0, 1]) \
-            .setContact(1)
-    else:
-        print("orientation must be either 'horizontal' or 'vertical'. ")
-    return C
-
-
-def add_cornerBlock(C, name='cornerBlock_obstacle', block_pos=[0, 0, 0], orientation='upper_right'):
-
-    """
-    :param C:           Config object
-    :param name:        name of the corner block
-    :param block_pos:   position of center of long horizontal 4x8 block
-    :param orientation: upper/lower depending if long horizontal block is above or under the small block;
-                        right/left depending if small block is on left or right end of long horizontal block
-    """
-    
-    C.addFrame(name=name, parent='puzzle_world') \
-        .setShape(ry.ST.ssBox, [0.08, 0.04, 0.017, 0.0]) \
-        .setRelativePosition(block_pos) \
-        .setColor([.0, .0, 1]) \
-        .setContact(1)
+        start = [-4*0.04, 0.0, 0.015]
         
-    if orientation == 'upper_right':
-        smallBlock_pos = [block_pos[0] + 0.02, block_pos[1] - 0.04, block_pos[2]]
-        C.addFrame(name=name, parent='puzzle_world') \
-            .setShape(ry.ST.ssBox, [0.04, 0.04, 0.017, 0.0]) \
-            .setRelativePosition(smallBlock_pos) \
-            .setColor([.0, .0, 1]) \
-            .setContact(1)
-    elif orientation == 'upper_left':
-        smallBlock_pos = [block_pos[0] - 0.02, block_pos[1] - 0.04, block_pos[2]]
-        C.addFrame(name=name, parent='puzzle_world') \
-            .setShape(ry.ST.ssBox, [0.04, 0.04, 0.017, 0.0]) \
-            .setRelativePosition(smallBlock_pos) \
-            .setColor([.0, .0, 1]) \
-            .setContact(1)
-    elif orientation == 'lower_right':
-        smallBlock_pos = [block_pos[0] + 0.02, block_pos[1] + 0.04, block_pos[2]]
-        C.addFrame(name=name, parent='puzzle_world') \
-            .setShape(ry.ST.ssBox, [0.04, 0.04, 0.017, 0.0]) \
-            .setRelativePosition(smallBlock_pos) \
-            .setColor([.0, .0, 1]) \
-            .setContact(1)
-    elif orientation == 'lower_left':
-        smallBlock_pos = [block_pos[0] - 0.02, block_pos[1] + 0.04, block_pos[2]]
-        C.addFrame(name=name, parent='puzzle_world') \
-            .setShape(ry.ST.ssBox, [0.04, 0.04, 0.017, 0.0]) \
-            .setRelativePosition(smallBlock_pos) \
-            .setColor([.0, .0, 1]) \
-            .setContact(1)
-    else:
-        print("orientation must be either 'upper_right', 'upper_left', 'lower_right' or 'lower_left'. ")
-    return C
+        border_height = 0.07
+        border_thickness = 0.1
+        # left border, right border, top border, bottom border
+        border_pos = [([0.2+border_thickness/2, 0, border_height/2], 'vertical'),
+                      ([-0.2-border_thickness/2, 0, border_height/2], 'vertical'),
+                      ([0, 0.2+border_thickness/2, border_height/2], 'horizontal'), 
+                      ([0, -0.2-border_thickness/2, border_height/2], 'horizontal')]
     
 
-def add_goal(C, goal_pos, goal_size):
-    C.addFrame(name='goal', parent='puzzle_world') \
-        .setShape(ry.ST.ssBox, [goal_size, goal_size, 0.01, 0.0]) \
-        .setRelativePosition(goal_pos) \
-        .setColor([1., 1., 0]) \
-        .setContact(0)
-    return C
+        self._add_frame('puzzle_world', 'table', ry.ST.ssBox, [0.4, 0.4, 0.001, 0.0], self.pos_puzzleWorld, [0, 1], 1)
+        self._add_border_boxes(border_pos, border_height, border_thickness)
+        self._add_movingObject('moving_object', 'puzzle_world', ry.ST.ssBox, [0.03, 0.03, 0.03, 0.0], start, [1, 0, 0])
+
+        self._add_cube('cube1', cube1_pos)
+        self._add_cube('cube2', cube2_pos)
+        self._add_cube('cube3', cube3_pos)
+        self._add_block('block1', block1_pos, 'vertical')
+        self._add_block('block2', block2_pos, 'vertical')
+        self._add_block('block3', block3_pos, 'horizontal')
+        self._add_long_block('longBlock', longblock_pos, 'horizontal')
+        self._add_corner_block('cornerBlock', corner_pos, 'upper_left')
+        self._add_goal(self.q_goal, 0.08)
+
+        return self.C
+
+    def _add_frame(self, name, parent, shape_type, size, rel_pos, color, contact):
+        return self.C.addFrame(name=name, parent=parent) \
+            .setShape(shape_type, size) \
+            .setRelativePosition(rel_pos) \
+            .setColor(color) \
+            .setContact(contact)
+    
+    def _add_movingObject(self, name, parent, shape_type, size, rel_pos, color):
+        return self.C.addFrame(name=name, parent=parent) \
+            .setShape(shape_type, size) \
+            .setRelativePosition(rel_pos) \
+            .setColor(color) \
+            .setJoint(ry.JT.rigid) \
+            .setMass(1.0) \
+            .setContact(1)
+
+
+    def _add_border_boxes(self, border_pos, border_height, border_thickness):
+        # Define the size and color of the border boxes
+        box_color = [0.0, 1.0, 0.0, 0.2]  # Almost transparent color (RGBA)
+        box_name = ['left', 'right', 'top', 'bottom']
+        for i, pos in enumerate(border_pos):
+            pos, orientation = pos[0], pos[1]
+            if orientation == 'vertical':
+                box_size = [border_thickness, 0.6, border_height, 0.0] 
+            elif orientation == 'horizontal':
+                box_size = [0.6, border_thickness, border_height, 0.0]
+            border_box_name = f'border_box_{box_name[i]}'
+            self.C.addFrame(name=border_box_name, parent='puzzle_world') \
+                .setShape(ry.ST.ssBox, box_size) \
+                .setRelativePosition(pos) \
+                .setColor(box_color) \
+                .setContact(1)
+        
+    def _add_cube(self, name, pos):
+        return self._add_frame(name, 'puzzle_world', ry.ST.ssBox, [0.04, 0.04, 0.017, 0.0], pos, [0, 0, 1], 1)
+
+    def _add_block(self, name, pos, orientation):
+        if orientation == 'horizontal':
+            size = [0.08, 0.04, 0.017, 0.0]
+        elif orientation == 'vertical':
+            size = [0.04, 0.08, 0.017, 0.0]
+        else:
+            raise ValueError("orientation must be either 'horizontal' or 'vertical'.")
+        return self._add_frame(name, 'puzzle_world', ry.ST.ssBox, size, pos, [0, 0, 1], 1)
+
+    def _add_long_block(self, name, pos, orientation):
+        if orientation == 'horizontal':
+            size = [0.16, 0.04, 0.017, 0.0]
+        elif orientation == 'vertical':
+            size = [0.04, 0.16, 0.017, 0.0]
+        else:
+            raise ValueError("orientation must be either 'horizontal' or 'vertical'.")
+        return self._add_frame(name, 'puzzle_world', ry.ST.ssBox, size, pos, [0, 0, 1], 1)
+
+    def _add_corner_block(self, name, pos, orientation):
+        size = [0.08, 0.04, 0.017, 0.0]
+        frame = self._add_frame(name, 'puzzle_world', ry.ST.ssBox, size, pos, [0, 0, 1], 1)
+        
+        offset = 0.02
+        if 'upper' in orientation:
+            offset_y = -0.04
+        else:
+            offset_y = 0.04
+
+        if 'left' in orientation:
+            offset_x = -offset
+        else:
+            offset_x = offset
+
+        self._add_frame(name, 'puzzle_world', ry.ST.ssBox, [0.04, 0.04, 0.017, 0.0], [pos[0] + offset_x, pos[1] + offset_y, pos[2]], [0, 0, 1], 1)
+
+        return frame
+
+    def _add_goal(self, pos, size):
+        return self._add_frame('goal', 'puzzle_world', ry.ST.ssBox, [size, size, 0.01, 0.0], pos, [1., 1., 0], 0)
+
+
+
+# -------- Usage --------
+
+# C = ry.Config()
+# C.addFile(ry.raiPath('scenarios/pandaSingle.g'))
+# puzzle_world = PuzzleWorld(C, 'table')
+# puzzle_world.build()
+# C.view(True)
