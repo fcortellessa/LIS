@@ -20,8 +20,6 @@ class PuzzleWorld:
 
         longblock_pos = [2*0.04, -1.5*0.04, 0.0085]
         corner_pos = [-2 * 0.04, -2.5 * 0.04, 0.0085] # position of center of horizontal 4x8 block
-
-        start = [-4*0.04, 0.0, 0.015]
         
         border_height = 0.1
         border_thickness = 0.1
@@ -34,7 +32,7 @@ class PuzzleWorld:
 
         self._add_frame('puzzle_world', 'table', ry.ST.ssBox, [0.4, 0.4, 0.001, 0.0], self.pos_puzzleWorld, [0, 1], 1)
         self._add_border_boxes(border_pos, border_height, border_thickness)
-        self._add_movingObject('moving_object', 'puzzle_world', ry.ST.ssBox, [0.03, 0.03, 0.03, 0.0], start, [1, 0, 0])
+        self._add_movingObject('moving_object', 'puzzle_world', ry.ST.ssBox, [0.03, 0.03, 0.03, 0.0], self.q_start, [1, 0, 0])
 
         self._add_cube('cube1', cube1_pos)
         self._add_cube('cube2', cube2_pos)
