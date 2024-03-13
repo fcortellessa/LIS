@@ -1,4 +1,4 @@
-# using https://github.com/Tupryk/SHK_LIS/blob/main/maze_solver/main.py
+# based on Eckhard's code: https://github.com/Tupryk/SHK_LIS/blob/main/maze_solver/main.py
 
 import sys
 import robotic as ry
@@ -6,8 +6,8 @@ import time
 # import oop_prebuilt_puzzleWorld as pWorld
 import buildMazeOnly as pWorld
 import robot_execution as robex
-# import puzzle_utils as puzut
 import expanded_manipulation as manip
+from expanded_manipulation import ManipulationModelling
 
 
 def solve_maze_rrt(C: ry.Config, visual: bool=False) -> ry._robotic.SolverReturn:
@@ -57,9 +57,9 @@ ry.params_add({'rrt/stepsize':.05})
 
 
 C = ry.Config()
-q_pWorld = [0.0, 0.3, 0.7]
-q_start = [-1*0.04, 0.0, 0.0]
-q_goal = [-3*0.04, 3*0.04, 0.00]
+q_pWorld = [0.0, 0.3, 0.65]
+q_start = [-0.12, .0, .0]
+q_goal = [0.12, .12, .0]
 puzzle_world = pWorld.PuzzleWorld(C, None, q_pWorld, q_start, q_goal)
 puzzle_world.build()
 
@@ -73,7 +73,7 @@ if not ret.feasible:
 C = ry.Config()
 C.addFile(ry.raiPath('scenarios/pandaSingle.g'))
 
-q_pWorld = [0.0, 0.3, 0.7]
+q_pWorld = [0.0, 0.3, 0.65]
 q_start = [-1*0.04, 0.0, 0.0]
 q_goal = [-3*0.04, 3*0.04, 0.00]
 puzzle_world = pWorld.PuzzleWorld(C, None, q_pWorld,q_start, q_goal)
@@ -83,7 +83,7 @@ bpos = C.getFrame("start").getPosition()
 C.addFrame("box") \
     .setPosition(bpos) \
     .setShape(ry.ST.ssBox, size=[.03, .03, .03, .001]) \
-    .setColor([0., 0., 1.]) \
+    .setColor([1, .0, .0]) \
     .setContact(1) \
     .setMass(1.)
 
@@ -91,7 +91,7 @@ C.view()
 
 
 # Grab the box and follow the RRT path
-man = manip.ManipulationModelling(C)
+man = ManipulationModelling(C)
 man.setup_inverse_kinematics()
 man.grasp_box(1., "l_gripper", "box", "l_palm", "y")
 pose = man.solve()
