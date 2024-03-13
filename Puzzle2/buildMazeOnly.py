@@ -48,10 +48,10 @@ class PuzzleWorld:
         # self._add_cube('cube1', cube1_pos)
         self._add_cube('cube2', cube2_pos)
         self._add_cube('cube3', cube3_pos)
-        # self._add_block('block1', block1_pos, 'vertical')
-        # self._add_block('block2', block2_pos, 'vertical')
-        # self._add_block('block3', block3_pos, 'horizontal')
-        # self._add_long_block('longBlock', longblock_pos, 'horizontal')
+        self._add_block('block1', block1_pos, 'vertical')
+        self._add_block('block2', block2_pos, 'vertical')
+        self._add_block('block3', block3_pos, 'horizontal')
+        self._add_long_block('longBlock', longblock_pos, 'horizontal')
         self._add_corner_block('cornerBlock', corner_pos, 'upper_left')
         # self._add_goal(self.q_goal, 0.08)
         
@@ -134,7 +134,7 @@ class PuzzleWorld:
         else:
             offset_x = offset
 
-        self._add_frame(name, 'puzzle_world', ry.ST.ssBox, [0.04, 0.04, 0.017, 0.0], [pos[0] + offset_x, pos[1] + offset_y, pos[2]], [0, 0, 1], 1)
+        self._add_frame('name{small}', 'puzzle_world', ry.ST.ssBox, [0.04, 0.04, 0.017, 0.0], [pos[0] + offset_x, pos[1] + offset_y, pos[2]], [0, 0, 1], 1)
 
         return frame
 
@@ -151,6 +151,7 @@ class PuzzleWorld:
 # C.view(True)
 
 # C = ry.Config()
-# puzzle_world = PuzzleWorld(C, 'None', [0.0, 0.3, 0.7], [-0.1, .0, .0], [0.1, .1, .0])
+# C.addFile(ry.raiPath("scenarios/pandaSingle.g"))
+# puzzle_world = PuzzleWorld(C, 'None', [0.0, 0.3, 0.65], [-0.12, .0, .0], [0.12, .12, .0])
 # puzzle_world.build()
 # C.view(True)
