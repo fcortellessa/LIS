@@ -116,7 +116,7 @@ class PuzzleWorld:
         else:
             offset_x = offset
 
-        self._add_frame(name, 'puzzle_world', ry.ST.ssBox, [0.04, 0.04, 0.017, 0.0], [pos[0] + offset_x, pos[1] + offset_y, pos[2]], [0, 0, 1], 1)
+        self._add_frame('name{small}', 'puzzle_world', ry.ST.ssBox, [0.04, 0.04, 0.017, 0.0], [pos[0] + offset_x, pos[1] + offset_y, pos[2]], [0, 0, 1], 1)
 
         return frame
 
